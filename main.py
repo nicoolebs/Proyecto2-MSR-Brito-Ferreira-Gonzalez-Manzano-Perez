@@ -1,96 +1,126 @@
-# from pickle import FALSE
-# from sympy import false
+#Importaciones respectivas
 from genericpath import exists
 from node import *
 from graph import *
 import sys
+# from pickle import FALSE
+# from sympy import false
 # import pandas as pd
 # import networkx as nx
 # from matplotlib import pyplot as plt
 
-#Variables
+
+#Variables para usar luego
 graph : Graph
 newGraph : Graph
 graphX1: Graph
 nodesId = []
 activities = []
 
-#Leer el archivo txt
+
+#Función para leer el archivo txt del proyecto
 def read_file():
-
+    
+   #Variable de actividades 
     global activities
-
+    #Se abre el TXT y se lee
     f = open("Archivo.txt", "r")
+    #Se eliminan los \n con Splitline
     temp = f.read().splitlines()
 
+    #Se recorre el documento leído
     for x in temp:
+        #Se guardan las actividades -con sus datos id, descripción, duración, predecesores- 
+        #Se separan los datos que se encuentran divididos por -
         activity = x.split('-') 
         activities.append(activity)
-
+    #Se cierra el TXT
     f.close()
-
+    #Retorna las actividades guardadas
     return activities
 
-#Validando la información del TXT
+
+#Función para validar la información del TXT
 def validate_txt(activities):
 
+    #Variable para saber que el nodo Start no tiene predecesores
     start = ''
 
-    #Validar ids repetidos
-    ids = [act[0] for act in activities]
-    ids_sin_dup = list(set(ids))
+    #Para validar los ids repetidos se hace:
 
+    #Se guardan los Ids de las actividades
+    ids = [act[0] for act in activities]
+    #Se hace una lista con todos los Ids que no estan duplicados
+    ids_sin_dup = list(set(ids))
+    #Si el tañano de la lista de los Ids es diferente al tamaño de la lista de los Ids sin duplicado
     if len(ids) != len(ids_sin_dup):
-        print('No pueden haber duplicados')
+        #Eso quiere decir que hay IDs duplicados y eso no se permite, por lo que se lanza el siguiente mensaje
+        print('No pueden existir Ids de las actividades duplicados.')
         return False
 
-    #Validar duraciones
+    #Para validar las duraciones de las actividades -que no puede tener letras y no puede ser 0- se tiene:
+    
+    #Se guardan las duraciones de las actividades que SOLO TENGAN como duración "0"
     durations_0 = [act[2] for act in activities if act[2] == 0]
+    #Se guardan todas las duraciones de las actividades que están en el TXT
     durations =  [act[2] for act in activities]
 
+    #Se recorren las duraciones
     for dur in durations:
+        #Si una de las duraciones NO es un dígito
         if not dur.isdigit():
-            print('Hay letras en las duraciones')
+            #Se lanza el siguiente mensaje
+            print('No pueden existir letras en las duraciones de las actividades.')
             return False
-
+    #Si el tamaño de la lista donde solo se guardan las actividades de duración 0 es mayor a 0
     if len(durations_0) > 0:
-        print ('No puede haber duraciones igual a cero')
+        #Se lanza el siguiente mensaje
+        print ('No pueden existir duraciones en las actividades igual a cero.')
         return False
 
-    #Validar los predecesores
+    #Para validar si solo hay 1 nodo inicio, si los predecesores existen:
+    
+    #Se guardan todos los predecesores del TXT 
     predecessors = [act[3] for act in activities]
+    #Variable que se usará para validar si hay más de dos nodos inicio
     num_starts = 0
-
+    #Se recorren los predecesores
     for pred in predecessors:
+        #Se separan los mismo porque en el TXT se encuntran separados por ","
         pred_sin_coma = pred.split(',')
-
+        #Se recorren los predecesores guardaddos sin "," para ver si existen
         for id in pred_sin_coma:
-
+            #Si el predecesor existe o uno de ellos tiene como predecesor vacío ""
             if id in ids or id == '':
-
-                #Se guarda el inicio
+                #No pasa nda
+                #Si el predecesor es vacío
                 if id == '':
+                    #Se suma uno a la varibale para validar si hay más de dos nodos inicio
                     num_starts += 1
-
                 print('El id está')
             else:
+                #Si el predecesor no exite
                 print('El id no está')
                 return False
   
-    #Verificar si hay más de un inicio
+    #Para verificar si hay más de un nodo inicio o si NO existe
+    #Si la varibale para validar si hay más de dos nodos inicio es mayor a 1 es que hay dos 
     if num_starts > 1:
-        print('Hay más de un inicio')
+        #Por ello se lanza el siguiente mensaje
+        print('En su archivo hay más de una actividad inicio y eso no es posible.')
         return False
+    #Si la varibale para validar si hay más de dos nodos inicio es mayor a 0, eso quiere decir que No hay nodo inicio
     elif num_starts == 0:
-        print('No hay un inicio')
+        #Por ello se lanza el siguiente mensaje
+        print('No hay una actividad inicio.')
         return False
 
     return True
 
 
-#Crear el grafo a partir de la info del txt
+#Función para crear el grafo a partir de la información del txt
 def create():
-
+    #Varibales
     global graph 
     graph = Graph()
     global nodesId
@@ -98,9 +128,9 @@ def create():
     nodesId = []
     global inicio
 
-    #Recorrer las actividades para agregarlas al grafo
+    #Se recorre las actividades para agregarlas al grafo
     for activity in activities:
-
+        #Se guardan separados los predecesores sin ","
         predecessors = activity[3].split(',')
 
         #Falta guardar el inicio y validar que No puede tener como predecesores de un nodo al nodo inicio y a otro nodo

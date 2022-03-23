@@ -1,20 +1,30 @@
+
+#Clase nodo
 class  Node:
 
     def __init__(self, id: str or int, description: str, duration: float, predecesores: list) -> None:
+        #Id de la actividad
         self.id = id
+        #Descripción de la actividad
         self.description = description
+        #Duración de la actividad
+        self.duration = duration
+        #Predecesores de la actividad
+        self.pred = predecesores
+        #Sucesores
+        self.suces = []
+        #Visitados
         self.visitedForward = False
         self.visitedBackward = False
-        self.duration = duration
-        self.pred = predecesores
-        self.suces = []
+        #Variables de ES, EF, LS y lF
         self.es = 0 
         self.ef = 0
         self.ls = 0
         self.lf = 0
+        #Holgura
         self.holgura = 0
 
-
+    #Funciones para definir/colocar los datos deseados actualizados -dependiendo del grafo-
     def visitForward (self):
         self.visitedForward = True
 
@@ -44,7 +54,6 @@ class  Node:
 
     def set_lf(self, lf: float):
         self.lf = lf
-
 
     def set_holgura(self, holgura: int):
         self.holgura = holgura
