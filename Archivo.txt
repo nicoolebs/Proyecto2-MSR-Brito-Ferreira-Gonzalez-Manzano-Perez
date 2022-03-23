@@ -1,36 +1,9 @@
 actividades
-A
-B
-C
-D
-E
-F
-G
-H
-descripcion
-Cambiar sanitarios
-Cambiar pisos
-Remodelar la cocina
-Arreglar paredes
-Pintar la casa
-Instalar los equipos
-Limpiar la casa
-Mudarse al apartamento
-duracion
-3
-4
-2
-5
-1
-2
-4
-3
-predecesores
--
-A
-A
-B
-C
-C
-D,E
-F,G
+A-Cambiar sanitarios-3-
+B-Cambiar pisos-4-A
+C-Remodelar la cocina-2-A
+D-Arreglar paredes-5-B
+E-Pintar la casa-1-C
+F-Instalar los equipos-2-C
+G-Limpiar la casa-4-D,E
+H-Mudarse al apartamento-3-F,G
