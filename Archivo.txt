@@ -1,0 +1,36 @@
+actividades
+A
+B
+C
+D
+E
+F
+G
+H
+descripcion
+Cambiar sanitarios
+Cambiar pisos
+Remodelar la cocina
+Arreglar paredes
+Pintar la casa
+Instalar los equipos
+Limpiar la casa
+Mudarse al apartamento
+duracion
+3
+4
+2
+5
+1
+2
+4
+3
+predecesores
+-
+A
+A
+B
+C
+C
+D,E
+F,G
