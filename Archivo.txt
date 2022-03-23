@@ -1,7 +1,6 @@
-actividades
 A-Cambiar sanitarios-3-
 B-Cambiar pisos-4-A
-C-Remodelar la cocina-2-A
+C-Remodelar la cocina-2-A,B
 D-Arreglar paredes-5-B
 E-Pintar la casa-1-C
 F-Instalar los equipos-2-C
