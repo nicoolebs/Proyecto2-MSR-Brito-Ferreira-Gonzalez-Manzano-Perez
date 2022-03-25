@@ -1,8 +1,7 @@
-A-Cambiar sanitarios-3-
-B-Cambiar pisos-4-A
-C-Remodelar la cocina-2-A,B
-D-Arreglar paredes-5-B
-E-Pintar la casa-1-C
-F-Instalar los equipos-2-C
-G-Limpiar la casa-4-D,E
-H-Mudarse al apartamento-3-F,G
+A-Quitar ceramica-2-
+B-Instalar cableado-3-A
+E-Instalar tuberias-2-A
+C-Instalar calentador-1-B,E
+D-Instalar bomba-2-E
+F-Instalar jacuzzi-2-C,D
+G-Pruebas y ajustes-1-F
