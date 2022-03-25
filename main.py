@@ -11,7 +11,7 @@ import sys
 # from matplotlib import pyplot as plt
 
 
-#Variables para usar luego
+#Variables
 graph : Graph
 newGraph : Graph
 graphX1: Graph
@@ -137,191 +137,240 @@ def create():
 
     #Se recorre las actividades para agregarlas al grafo
     for activity in activities:
-        #Se guardan separados los predecesores sin ","
+        #Primero se guardan separados los predecesores sin las "," de la actividad 
         predecessors = activity[3].split(',')
-
+        #Si la actividad tiene un predecesor vacío
         if predecessors[0] == '':
+            #Se guarda que esa es la actividad/nodo de inicio
             start = activity[0]
-
+        #Y se guarda la actividad en una nueva lista 
         nodesId.append(activity[0])
 
+        #Se recorren los predecesores para revisar si existe el predecesor.
         for pred in predecessors:
+            #Si no es así
             if pred not in nodesId and pred != '':
-                print('Error, no existe el nodo ' + pred + 'en el grafo, revise que el archivo TXT esté ingresando los nodos en orden')
-            
+                print('Error, no existe la actividad ' + pred + ', revise que en el archivo TXT esté ingresando todas las actividades y en orden.')
+        
+        #Se añade la actividad, con toda la información respectiva, en un grafo 
         graph.add_node(activity[0], activity[1], float(activity[2]), predecessors)
+        #Se suma el contador de nodos/actividades que existen
         num_nodes += 1
     
+    #Se guarda en un array aux. los predecesores
     for i in nodesId:
         for j in graph.nodes_dict[i].pred:
             if j not in auxiliaryArray:
                 auxiliaryArray.append(j)
-
+    
+    #Se guardan todas las actividades
     setAll = set(nodesId)
+    #Se guardan todos los predecesores 
     setPred = set(auxiliaryArray)
+    #Se guarda el nodo que es la última actividad
     setLast = (setAll - setPred) 
     end = list(setLast)[0]
     
+    #Se retorna el grafo con las actividades
     return graph
 
 
+#Método de la Ruta Crítica
 def cpm(graphVal: Graph):
 
+    #Variables
     alterNodesId:list = []
     arrayQueue:list = []
     graphX: Graph = graphVal
     global num_holg
 
+   #Array auxiliar con las actividades 
     for node in nodesId:
         alterNodesId.append(node)
 
-    #Forward pass
+    #Haciendo el Forward Pass:
 
+    #Se saca del array la actividad inicial
     alterNodesId.pop(0)
-
+    #Y se calcula -de la actividad inicial- su EF mediante la suma de: su ES que es 0 y su duración
     graphX.nodes_dict[start].ef += graphX.nodes_dict[start].duration
     
+    #Ahora se recorre el array auxiliar con el resto de las actividades 
     for i in alterNodesId:
+        #Si el predecesor es igual al nodo inicio
+        if graphX.nodes_dict[i].pred[0] == start:
+            #Se guarda en una lista auxiliar arrayQueue
+            arrayQueue.append(graphX.nodes_dict[i].id)
 
-            if graphX.nodes_dict[i].pred[0] == start:
-                arrayQueue.append(graphX.nodes_dict[i].id)
-
+    #Si esa lista auxiliar -arrayQueue- es diferente a cero, o sea, hay predecesores, se hace
     while len(arrayQueue) !=0:
 
+        #Lista aux. de los nodos predecesores
         predNodes:list = []
+        #Se guarda en la actividad que se esta trabajando y se saca de la lista auxiliar 
         actual = arrayQueue.pop()
+        #Se guarda en una lista auxiliar los predecesores del nodo en que se está trabajando
+        predNodes = graphX.nodes_dict[actual].pred
+        #Bandera 
+        valid = True
 
-        if True:
+        #Si la lista de los predecesores de la actividad con la que se trabaja es igual a cero no se continúa más
+        for k in predNodes:
+            if graphX.nodes_dict[k].ef == 0:
+                valid = False
+                break
+        #En el caso contrario
+        if valid:
+            #Variable para guardar el máximo EF
+            maxEF = 0
+            #De los nodos predecesores se revisa si es mayor a maxEF y se guarda
+            for n in predNodes:
+                if graphX.nodes_dict[n].ef > maxEF:
+                    maxEF = graphX.nodes_dict[n].ef
+            #Ahora, en base a lo anterior, se calcula el EF y el EF respectivo de la actividad en la que se trabaja
+            graphX.nodes_dict[actual].es = maxEF
+            graphX.nodes_dict[actual].ef = graphX.nodes_dict[actual].es + graphX.nodes_dict[actual].duration
 
-            predNodes = graphX.nodes_dict[actual].pred
-            valid = True
+            #Si la actividad con la que se esta trabajando es predecesora de otro se guarda
+            for l in alterNodesId:
+                if actual in graphX.nodes_dict[l].pred:
+                    arrayQueue.append(l)
 
-            for k in predNodes:
-
-                if graphX.nodes_dict[k].ef == 0:
-                    valid = False
-                    break
-
-            if valid:
-
-                maxEF = 0
-                for n in predNodes:
-                    if graphX.nodes_dict[n].ef > maxEF:
-                        maxEF = graphX.nodes_dict[n].ef
-
-                graphX.nodes_dict[actual].es = maxEF
-                graphX.nodes_dict[actual].ef = graphX.nodes_dict[actual].es + graphX.nodes_dict[actual].duration
-
-                for l in alterNodesId:
-                    if actual in graphX.nodes_dict[l].pred:
-                        arrayQueue.append(l)
-
+    #Imprimiendo las actividades con sus respectivos ES y EF
     # for i in nodesId:
         # print(f'Nodo: {i}, ES: {graphX.nodes_dict[i].es}, EF: {graphX.nodes_dict[i].ef}')
    
+    #Haciendo el Backward Pass:
 
-    #Backward pass
-
+    #En una lista aux se guardan los predecesores del nodo/actividad final
     firstList = graphX.nodes_dict[end].pred
 
+    #Ahora, de la actividad final se calcula su respectivo LF y LS
     graphX.nodes_dict[end].lf = graphX.nodes_dict[end].ef
     graphX.nodes_dict[end].ls = graphX.nodes_dict[end].lf - graphX.nodes_dict[end].duration
 
+    #Se crea lista auxiliar sin el nodo final
     indexA = alterNodesId.index(end)
     alterNodesId.pop(indexA)
 
+    #Se guarda en una lista auxiliar los predecesores de la actividad
     for j in firstList:
         arrayQueue.append(j)
         index = alterNodesId.index(j)
         alterNodesId.pop(index)
 
+    #Si el tamaño de la lista auxiliar los predecesores de la actividad es diferente a 0, se hace
     while len(arrayQueue) != 0:
-
+        
+        #Se crean listas auxiliares de predecesores y sucesores
         predNodes:list = []
         sucNodes:list = []
+        #Se guarda el nodo con el que se trabajará y se saca de la lista aux
         actual = arrayQueue.pop(0)
 
+        #si el nodo con el que se trabaja esta en la lista auxiliar de los predecesores
         if actual in firstList:
-
+            #Variables
             maxEfbP = 0
+            #Se calcula el LF y el LS de la actividad
             for i in firstList:
                 if graphX.nodes_dict[i].ef > maxEfbP:
                     maxEfbP = graphX.nodes_dict[i].ef
-
             graphX.nodes_dict[actual].lf = maxEfbP
             graphX.nodes_dict[actual].ls = maxEfbP - graphX.nodes_dict[actual].duration
 
+            #Se buscan los predecesores de la actividad con la que se trabaja y se agregan a la lista aux
             for i in graphX.nodes_dict[actual].pred:
                 if i not in arrayQueue:
                     arrayQueue.append(i)
 
+        #Si no es así
         else:
-
+            #Se recorre la lista de las actividades y se guarda la actividad actual como sucesor
             for i in nodesId:
                 if actual in graphX.nodes_dict[i].pred:
                     sucNodes.append(i)
-
+            #Bandera
             valid = True
 
+            #Si el LS del sucesor es cero break
             for j in sucNodes:
                 if graphX.nodes_dict[j].ls == 0:
                     valid = False
                     break
             
             if valid:
-
+                #Variable
                 minLS = 99999999999999999
-
+                #Del nodo se saca se respectivo LS y LF
                 for i in sucNodes:
                     if graphX.nodes_dict[i].ls < minLS:
                         minLS = graphX.nodes_dict[i].ls
-
                 graphX.nodes_dict[actual].lf = minLS
                 graphX.nodes_dict[actual].ls = graphX.nodes_dict[actual].lf - graphX.nodes_dict[actual].duration
 
+                #Si hay predecesores en la actividad y no estan en la lista aux se agregan
                 for j in graphX.nodes_dict[actual].pred:
                     if j != 0 and j not in arrayQueue:
                         arrayQueue.append(j)
 
+    #Imprimiendo las actividades con sus respectivos LS y LF
     # for i in nodesId:
     #     print(f'Nodo: {i}, LS: {graphX.nodes_dict[i].ls}, LF: {graphX.nodes_dict[i].lf}')
 
-    #Calcular holguras
+    #Calculando las Holguras:
 
+    #Se recorre la lista con las actividades
     for i in nodesId:
+        #Se calcula la holguna restando LS-ES
         holg = graphX.nodes_dict[i].ls - graphX.nodes_dict[i].es
+        #Si la holgura es diferente de 0
         if holg != 0:
+            #Se guarda la actividad que tiene holgura
             graphX.nodes_dict[i].holgura = holg
+        #Si no es así
         else: 
+            #Se aumenta el contador de cantidad de actividades sin holgura
             num_holg += 1
-
+    
+    #Se crea una lista para las actividades que tienen holgura
     nodosHolguraId = []
 
+    #Se recorre la lista con las actividades
     for m in nodesId:
+         #Si la holgura es diferente de 0
         if graphX.nodes_dict[m].holgura != 0:
+            #Se guarda la actividad en la lista, ya que tiene holgura
             nodosHolguraId.append(m)
 
-    #CPM
+    #Imprimiendo los resultados del Método de la Ruta Crítica:
+
     path = []
     startList = []
     inicio = ""
     final = ""
-
+    auxiliaryArray: list = []
+    actualId = ""
+    loop = True 
     path.append(start)
-    for i in nodesId:   
+
+    #Se recorre la lista de las actividades
+    for i in nodesId:  
+        #Si el nodo es diferente al inicial 
         if i != start:
+            #Y si el predecesor es igual al inicio
             if graphX.nodes_dict[i].pred[0] == start:
+                #Se agrega a la lista aux
                 startList.append(i)
 
-    auxiliaryArray: list = []
-
+    #Se recorre la lista aux de las actividades
     for i in alterNodesId:
+        #Se recorren los predecesores
         for j in graphX.nodes_dict[i].pred:
+            #Si no se encuntra se agrega a la lista aux
             if j not in auxiliaryArray:
                 auxiliaryArray.append(j)
 
-    actualId = ""
-    loop = True 
 
     for i in startList:
             if graphX.nodes_dict[i].holgura == 0:
@@ -367,7 +416,7 @@ def cpm(graphVal: Graph):
         for n in nodosHolguraId:
             print(f"Nodo: {n}, Holgura: {graph.nodes_dict[n].holgura}")
     
-    # #CPM
+    #Dibujo del Método de la Ruta Crítica:
 
     # global graphX1 
     # graphX1 = graphX
@@ -411,26 +460,27 @@ def cpm(graphVal: Graph):
     # plt.show()
 
 
+#Main
 def main():
-    
+    #Se lee el archivo TXT
     read_file()
-
+    #Se valida el archivo TXT
     valid = validate_txt(activities)
 
+    #Si es valido, ejecuta el programa
     if valid:
         
         graph = create()
-
-        print("Su grafo se encuentra creado. Indique qué desea realizar: ")
-
         cpm(graph)
     
+    #Si no es valido, indica error
     else: 
 
         print('Txt malo')
 
 
-    #     print("1. Verificar ruta critica.")
+#COSAS PARA COLOCAR EN LA INTERFAZ :: OJOJOJO !!!!!!!!!!!!!!!!!!! OJOOJOJOJOJ
+    #   print("1. Verificar ruta critica.")
         # print("4. Solicitar información de actividad en el grafo")
 
         
@@ -460,5 +510,5 @@ def main():
 
 
 
-
+#Ejecutando el main
 main()

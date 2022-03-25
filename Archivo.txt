@@ -1,4 +1,4 @@
-A-Quitar ceramica-2-
+A-Quitar ceramicas-2-
 B-Instalar cableado-3-A
 E-Instalar tuberias-2-A
 C-Instalar calentador-1-B,E

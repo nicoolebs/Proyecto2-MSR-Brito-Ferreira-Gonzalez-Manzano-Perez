@@ -1,4 +1,3 @@
-
 #Clase nodo
 class  Node:
 
