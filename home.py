@@ -4,6 +4,7 @@ from turtle import width
 from PIL import Image, ImageTk
 from graph import *
 from node import *
+import pandas as pd
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 import networkx as nx
@@ -443,44 +444,44 @@ def cpm(graphVal: Graph):
 
     # Dibujo del Método de la Ruta Crítica:
 
-    # global graphX1
-    # graphX1 = graphX
+    global graphX1
+    graphX1 = graphX
 
-    # fromList = []
-    # toList = []
+    fromList = []
+    toList = []
 
-    # for i in nodesId:
-    #     for j in graphX.nodes_dict[i].pred:
-    #         fromList.append(j)
-    #         toList.append(i)
-    # df = pd.DataFrame({
-    # 'from': fromList,
-    # 'to': toList
-    # })
+    for i in nodesId:
+        for j in graphX.nodes_dict[i].pred:
+            fromList.append(j)
+            toList.append(i)
+    df = pd.DataFrame({
+    'from': fromList,
+    'to': toList
+    })
 
-    # G = nx.convert_matrix.from_pandas_edgelist(df, 'from', 'to')
-    # red_edges = []
+    G = nx.convert_matrix.from_pandas_edgelist(df, 'from', 'to')
+    red_edges = []
 
-    # for i in range(len(path)):
-    #     if i != 0:
-    #         auxTup = (path[i-1],path[i])
-    #         red_edges.append(auxTup)
-    # black_edges = [edge for edge in G.edges() if edge not in red_edges]
-    # edgesList = []
-    # colorList = []
-    # for i in red_edges:
-    #     edgesList.append(i)
-    #     colorList.append('red')
-    # for i in black_edges:
-    #     edgesList.append(i)
-    #     colorList.append('black')
+    for i in range(len(path)):
+        if i != 0:
+            auxTup = (path[i-1],path[i])
+            red_edges.append(auxTup)
+    black_edges = [edge for edge in G.edges() if edge not in red_edges]
+    edgesList = []
+    colorList = []
+    for i in red_edges:
+        edgesList.append(i)
+        colorList.append('red')
+    for i in black_edges:
+        edgesList.append(i)
+        colorList.append('black')
 
-    # values = [('green' if node == 'inicio' or node == "final"  else ('blue')) for node in G.nodes()]
-    # # nx.draw(G,  arrows=True, with_labels=True, node_size = 1000, node_color = values)
-    # nx.drawing.nx_pylab.draw_networkx (G,  arrows=True, with_labels=True, edgelist=edgesList, edge_color=colorList, node_size = 1000, node_color = values)
+    values = [('green' if node == 'inicio' or node == "final"  else ('blue')) for node in G.nodes()]
+    # nx.draw(G,  arrows=True, with_labels=True, node_size = 1000, node_color = values)
+    nx.drawing.nx_pylab.draw_networkx (G,  arrows=True, with_labels=True, edgelist=edgesList, edge_color=colorList, node_size = 1000, node_color = values)
 
-    # # nx.drawing.nx_pylab.draw_networkx (G,  arrows=True, with_labels=True, edgelist=black_edges,)
-    # plt.show()
+    # nx.drawing.nx_pylab.draw_networkx (G,  arrows=True, with_labels=True, edgelist=black_edges,)
+    plt.show()
 
 
 # Main
