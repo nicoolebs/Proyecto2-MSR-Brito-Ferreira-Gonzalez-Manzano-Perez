@@ -1,5 +1,7 @@
 # Importaciones respectivas
 from tkinter import *
+from tkinter import messagebox
+from tkinter.ttk import Treeview
 from turtle import width
 from PIL import Image, ImageTk
 from graph import *
@@ -89,7 +91,7 @@ def validate_txt(activities):
     # Si el tañano de la lista de los Ids es diferente al tamaño de la lista de los Ids sin duplicado
     if len(ids) != len(ids_sin_dup):
         # Eso quiere decir que hay IDs duplicados y eso no se permite, por lo que se lanza el siguiente mensaje
-        print('No pueden existir Ids de las actividades duplicados.')
+        messagebox.showerror('Error en archivo de disco', 'No pueden existir Ids de las actividades duplicados. Arregle el archivo txt y vuelva a presionar el botón.')
         return False
 
     # Para validar las duraciones de las actividades -que no puede tener letras y no puede ser 0- se tiene:
@@ -104,12 +106,12 @@ def validate_txt(activities):
         # Si una de las duraciones NO es un dígito
         if not dur.isdigit():
             # Se lanza el siguiente mensaje
-            print('No pueden existir letras en las duraciones de las actividades.')
+            messagebox.showerror('Error en archivo de disco', 'No pueden existir letras en las duraciones de las actividades. Arregle el archivo txt y vuelva a presionar el botón.')
             return False
     # Si el tamaño de la lista donde solo se guardan las actividades de duración 0 es mayor a 0
     if len(durations_0) > 0:
         # Se lanza el siguiente mensaje
-        print('No pueden existir duraciones en las actividades igual a cero.')
+        messagebox.showerror('Error en archivo de disco', 'No pueden existir duraciones en las actividades igual a cero. Arregle el archivo txt y vuelva a presionar el botón.')
         return False
 
     # Para validar si solo hay 1 nodo inicio, si los predecesores existen:
@@ -133,19 +135,19 @@ def validate_txt(activities):
                     num_starts += 1
             else:
                 # Si el predecesor no exite
-                print('El id no está')
+                messagebox.showerror('Error en archivo de disco', 'El id del predecesor no existe. Arregle el archivo txt y vuelva a presionar el botón.')
                 return False
 
     # Para verificar si hay más de un nodo inicio o si NO existe
     # Si la varibale para validar si hay más de dos nodos inicio es mayor a 1 es que hay dos
     if num_starts > 1:
         # Por ello se lanza el siguiente mensaje
-        print('En su archivo hay más de una actividad inicio y eso no es posible.')
+        messagebox.showerror('Error en archivo de disco', 'En su archivo hay más de una actividad inicio y eso no es posible. Arregle el archivo txt y vuelva a presionar el botón.')
         return False
     # Si la varibale para validar si hay más de dos nodos inicio es mayor a 0, eso quiere decir que No hay nodo inicio
     elif num_starts == 0:
         # Por ello se lanza el siguiente mensaje
-        print('No hay una actividad inicio.')
+        messagebox.showerror('Error en archivo de disco', 'No hay una actividad inicio. Arregle el archivo txt y vuelva a presionar el botón.')
         return False
 
     return True
@@ -179,8 +181,8 @@ def create():
         for pred in predecessors:
             # Si no es así
             if pred not in nodesId and pred != '':
-                print(
-                    'Error, no existe la actividad ' + pred + ', revise que en el archivo TXT esté ingresando todas las actividades y en orden.')
+                messagebox.showerror('Error en archivo de disco', 
+                    'Error, no existe la actividad ' + pred + ', revise que en el archivo TXT esté ingresando todas las actividades y en orden y vuelva a presionar el botón.')
 
         # Se añade la actividad, con toda la información respectiva, en un grafo
         graph.add_node(activity[0], activity[1], float(activity[2]), predecessors)
@@ -458,10 +460,17 @@ def cpm(graphVal: Graph):
     fromList = []
     toList = []
 
+    flag = False
+
     for i in nodesId:
-        for j in graphX.nodes_dict[i].pred:
-            fromList.append(j)
-            toList.append(i)
+        if flag:
+
+            for j in graphX.nodes_dict[i].pred:
+                print(i, j)
+                fromList.append(j)
+                toList.append(i)
+        
+        flag = True
     df = pd.DataFrame({
     'from': fromList,
     'to': toList
@@ -484,8 +493,15 @@ def cpm(graphVal: Graph):
         edgesList.append(i)
         colorList.append('black')
 
-    values = [('green' if node == 'inicio' or node == "final"  else ('blue')) for node in G.nodes()]
+    for i in pathStr:
+        #Si la ciudad se visita para realizar el viaje se pinta de color rojo el nodo
+        # print (i)
+        values = [('grey' if node == start or node == end else 'blue') for node in G.nodes()]
+
     nx.drawing.nx_pylab.draw_networkx (G,  arrows=True, with_labels=True, edgelist=edgesList, edge_color=colorList, node_size = 1000, node_color = values)
+
+    textt='CPM:'+ str({pathStr})
+    Label(homeFrame, text=textt, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="10", y="650")
 
     #Colocando el dibujo en la ventana de Tkinter
     canvas = FigureCanvasTkAgg(figure,master=home)
@@ -495,9 +511,66 @@ def cpm(graphVal: Graph):
     toolbar.update()
     canvas.get_tk_widget().place(x="50", y="150")
 
+tabla: Treeview
+
+tabla = Treeview(homeFrame)
+
+tabla['columns'] = ('Actividad', 'Descripción', 'Duración', 'ES', 'EF', 'LS', 'LF', 'Holgura')
+
+def create_table(grafo):
+
+    global tabla
+    global nodesId
+
+    j = 0
+    tabla = Treeview(homeFrame)
+    tabla['columns'] = ('Actividad', 'Descripción', 'Duración', 'ES', 'EF', 'LS', 'LF', 'Holgura')
+
+    tabla.column("#0", width=0,  stretch=NO)
+    tabla.column("Actividad",anchor=CENTER, width=80)
+    tabla.column("Descripción",anchor=CENTER,width=150)
+    tabla.column("Duración",anchor=CENTER,width=80)
+    tabla.column("ES",anchor=CENTER,width=80)
+    tabla.column("EF",anchor=CENTER,width=80)
+    tabla.column("LS",anchor=CENTER,width=80)
+    tabla.column("LF",anchor=CENTER,width=80)
+    tabla.column("Holgura",anchor=CENTER,width=80)
+
+    tabla.heading("#0",text="",anchor=CENTER)
+    tabla.heading("Actividad",text="Actividad",anchor=CENTER)
+    tabla.heading("Descripción",text="Descripción",anchor=CENTER)
+    tabla.heading("Duración",text="Duración",anchor=CENTER)
+    tabla.heading("ES",text="ES",anchor=CENTER)
+    tabla.heading("EF",text="EF",anchor=CENTER)
+    tabla.heading("LS",text="LS",anchor=CENTER)
+    tabla.heading("LF",text="LF",anchor=CENTER)
+    tabla.heading("Holgura",text="Holgura",anchor=CENTER)
+
+    for i in nodesId:
+        print(str(grafo.nodes_dict[i].id))
+
+        tabla.insert(parent='',index='end',iid=j,text='', values=(str(grafo.nodes_dict[i].id),str(grafo.nodes_dict[i].description),str(grafo.nodes_dict[i].duration),str(grafo.nodes_dict[i].es),str(grafo.nodes_dict[i].ef), str(grafo.nodes_dict[i].ls), str(grafo.nodes_dict[i].lf), str(grafo.nodes_dict[i].holgura)))
+        j += 1
+    
+    tabla.pack()
+    tabla.place(x="600", y="150") 
 
 # Main
 def ejecucionCPM():
+
+    global nodesId
+    nodesId = []
+    global activities
+    activities = []
+    global start
+    start = ''
+    global end
+    end = ''
+    global num_nodes
+    num_nodes = 0
+    global num_holg
+    num_holg = 0
+
     # Se lee el archivo TXT
     read_file()
     # Se valida el archivo TXT
@@ -508,11 +581,13 @@ def ejecucionCPM():
 
         graph = create()
         cpm(graph)
+        create_table(graph)
 
     # Si no es valido, indica error
     else:
 
         print('Txt malo')
+
 
 botonComenzar = Button(homeFrame, text="Calcular Ruta Critica", width=25,height=1, bg="#B6CBDE", font=("Roboto", 10, "bold"), command=ejecucionCPM).place(x="625", y="180", anchor="center")
 
