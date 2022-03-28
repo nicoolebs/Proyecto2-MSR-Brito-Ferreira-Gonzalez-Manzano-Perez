@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import tkinter as tk
 import matplotlib as mpl
 
+
 # Configuración de la interfaz gráfica
 
 # Creación de la ventana
@@ -22,10 +23,8 @@ home = Tk()
 # Título de la ventana
 home.title("Ruta Critica")
 
-
 # Para que la ventana no sea redimensionable
 home.resizable(0, 0)
-
 # Configuración del frame que va a contener todos los widgets que se van a mostar en la interfaz gráfica
 homeFrame = Frame()
 homeFrame.pack()
@@ -33,16 +32,14 @@ homeFrame.config(bg="#f0ebe7")
 homeFrame.config(width="1300", height="700")
 
 # Etiquetas que se muestran en pantalla con mensajes de Bienvenida
-Label(homeFrame, text="¡Bienvenido a la Calculadora de Ruta Critica CPM/PERT!", fg="#000000", font=("Poppins", 18, "bold"), bg="#f0ebe7").place(x="600", y="50", anchor="center")
+Label(homeFrame, text="¡Bienvenido a la Calculadora de Ruta Crítica CPM/PERT!", fg="#000000", font=("Poppins", 18, "bold"), bg="#f0ebe7").place(x="600", y="50", anchor="center")
 Label(homeFrame, text="Por favor, edite su Archivo TXT con sus actividades y datos respectivos.", fg="#000000",
       font=("Roboto", 12, "bold"), bg="#f0ebe7") \
     .place(x="600", y="115", anchor="center")
-Label(homeFrame, text="Una vez colocadas las mismas en el archivo de datos, oprima el siguiente botón para calcular a ruta crítica del Proyecto.", fg="#000000",
+Label(homeFrame, text="Una vez colocadas las mismas en el archivo de datos, oprima el siguiente botón para calcular la ruta crítica del Proyecto.", fg="#000000",
       font=("Roboto", 12, "bold"), bg="#f0ebe7") \
     .place(x="600", y="145", anchor="center")
 
-
-#EJECUCION DEL CPM
 
 #Variables
 graph : Graph
@@ -79,6 +76,7 @@ def read_file():
 
 # Función para validar la información del TXT
 def validate_txt(activities):
+
     # Variable para saber que el nodo Start no tiene predecesores
     start = ''
 
@@ -219,6 +217,7 @@ def cpm(graphVal: Graph):
     for node in nodesId:
         alterNodesId.append(node)
 
+
     # Haciendo el Forward Pass:
 
     # Se saca del array la actividad inicial
@@ -267,9 +266,6 @@ def cpm(graphVal: Graph):
                 if actual in graphX.nodes_dict[l].pred:
                     arrayQueue.append(l)
 
-    # Imprimiendo las actividades con sus respectivos ES y EF
-    # for i in nodesId:
-    # print(f'Nodo: {i}, ES: {graphX.nodes_dict[i].es}, EF: {graphX.nodes_dict[i].ef}')
 
     # Haciendo el Backward Pass:
 
@@ -345,9 +341,6 @@ def cpm(graphVal: Graph):
                     if j != 0 and j not in arrayQueue:
                         arrayQueue.append(j)
 
-    # Imprimiendo las actividades con sus respectivos LS y LF
-    # for i in nodesId:
-    #     print(f'Nodo: {i}, LS: {graphX.nodes_dict[i].ls}, LF: {graphX.nodes_dict[i].lf}')
 
     # Calculando las Holguras:
 
@@ -373,6 +366,7 @@ def cpm(graphVal: Graph):
         if graphX.nodes_dict[m].holgura != 0:
             # Se guarda la actividad en la lista, ya que tiene holgura
             nodosHolguraId.append(m)
+
 
     # Imprimiendo los resultados del Método de la Ruta Crítica:
 
@@ -432,44 +426,50 @@ def cpm(graphVal: Graph):
             pathStr += i
 
     if num_holg == num_nodes:
-        print(f'En este proyecto todas las activides son críticas')
-        print(f'Una posible ruta crítica puede ser la siguiente')
+        Texto_holg='En este proyecto todas las actividades son críticas.'
+        Label(homeFrame, text=Texto_holg, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="425")
+        Texto_holg_2='Una posible ruta crítica puede ser la siguiente:'
+        Label(homeFrame, text=Texto_holg_2, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="448")
 
-    print(f'CPM: {pathStr}')
-    print(f'TIEMPO DE DURACION DEL CP: {totalDuration}')
-    print(f'INICIAL: {graphX.nodes_dict[start].description}')
-    print(f'FINAL: {graphX.nodes_dict[end].description}')
-    print("\n")
-
+    #Mensaje Ruta Crítica
+    ruta_critica='Ruta Crítica del Proyecto: '+ str({pathStr})
+    Label(homeFrame, text=ruta_critica, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="475")
+    #Mensaje Tiempo de duración
+    ruta_critica='Tiempo de Duración del Proyecto: '+ str({totalDuration})
+    Label(homeFrame, text=ruta_critica, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="500")
+    #Mensaje de la Actividad Inicial
+    actividad_inicial='Actividad Inicial del Proyecto: '+ str({graphX.nodes_dict[start].description})
+    Label(homeFrame, text=actividad_inicial, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="525")
+    #Mensaje de la Actividad Final
+    actividad_inicial='Actividad Final del Proyecto: '+ str({graphX.nodes_dict[end].description})
+    Label(homeFrame, text=actividad_inicial, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="555")
+    #Nodos con holgura
     if num_holg != num_nodes:
-        print("Nodos con holgura")
+        Label(homeFrame, text='Nodos con Holgura: ', fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="575")
         for n in nodosHolguraId:
-            print(f"Nodo: {n}, Holgura: {graph.nodes_dict[n].holgura}")
-
-
+            nodos_hog='Nodo: '+{n}+' -> Holgura: '+{graph.nodes_dict[n].holgura}
+            Label(homeFrame, text=nodos_hog, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="595")
+    
+        
     # Dibujo del Método de la Ruta Crítica:
 
     #Configuración de la figura a generar del grafo en la interfaz
-    figure= plt.figure(figsize=(4, 4), dpi=100)
+    figure= plt.figure(figsize=(4.5, 4.5), dpi=100)
     plt.axis('off')
     subplot= figure.add_subplot(111)
 
+    #Variables
     global graphX1
     graphX1 = graphX
-
     fromList = []
     toList = []
-
     flag = False
 
     for i in nodesId:
         if flag:
-
             for j in graphX.nodes_dict[i].pred:
-                print(i, j)
                 fromList.append(j)
                 toList.append(i)
-        
         flag = True
     df = pd.DataFrame({
     'from': fromList,
@@ -493,39 +493,37 @@ def cpm(graphVal: Graph):
         edgesList.append(i)
         colorList.append('black')
 
-    for i in pathStr:
-        #Si la ciudad se visita para realizar el viaje se pinta de color rojo el nodo
-        # print (i)
-        values = [('grey' if node == start or node == end else 'blue') for node in G.nodes()]
+    values = [('blue' if node == start or node == end else 'grey') for node in G.nodes()]
 
-    nx.drawing.nx_pylab.draw_networkx (G,  arrows=True, with_labels=True, edgelist=edgesList, edge_color=colorList, node_size = 1000, node_color = values)
+    nx.drawing.nx_pylab.draw_networkx (G,  arrows=True, with_labels=True, edgelist=edgesList, edge_color=colorList, node_size = 900, node_color = values)
 
-    textt='CPM:'+ str({pathStr})
-    Label(homeFrame, text=textt, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="10", y="650")
-
+   
     #Colocando el dibujo en la ventana de Tkinter
     canvas = FigureCanvasTkAgg(figure,master=home)
     canvas.draw()
     canvas.get_tk_widget().pack()
     toolbar = NavigationToolbar2Tk(canvas, home)
     toolbar.update()
-    canvas.get_tk_widget().place(x="50", y="150")
+    canvas.get_tk_widget().place(x="50", y="210")
 
-tabla: Treeview
 
-tabla = Treeview(homeFrame)
-
-tabla['columns'] = ('Actividad', 'Descripción', 'Duración', 'ES', 'EF', 'LS', 'LF', 'Holgura')
-
-def create_table(grafo):
-
-    global tabla
-    global nodesId
-
-    j = 0
+   #Imprimiendo datos de las actividades en tabla     
+    tabla: Treeview
     tabla = Treeview(homeFrame)
     tabla['columns'] = ('Actividad', 'Descripción', 'Duración', 'ES', 'EF', 'LS', 'LF', 'Holgura')
 
+
+#Función para generar tabla con los datos de las actividades del Archivo TXT
+def create_table(grafo):
+
+    #Variables
+    global tabla
+    global nodesId
+    j = 0
+
+    #Creando tabla
+    tabla = Treeview(homeFrame)
+    tabla['columns'] = ('Actividad', 'Descripción', 'Duración', 'ES', 'EF', 'LS', 'LF', 'Holgura')
     tabla.column("#0", width=0,  stretch=NO)
     tabla.column("Actividad",anchor=CENTER, width=80)
     tabla.column("Descripción",anchor=CENTER,width=150)
@@ -546,18 +544,20 @@ def create_table(grafo):
     tabla.heading("LF",text="LF",anchor=CENTER)
     tabla.heading("Holgura",text="Holgura",anchor=CENTER)
 
+    #Rellenando tabla
     for i in nodesId:
-        print(str(grafo.nodes_dict[i].id))
-
         tabla.insert(parent='',index='end',iid=j,text='', values=(str(grafo.nodes_dict[i].id),str(grafo.nodes_dict[i].description),str(grafo.nodes_dict[i].duration),str(grafo.nodes_dict[i].es),str(grafo.nodes_dict[i].ef), str(grafo.nodes_dict[i].ls), str(grafo.nodes_dict[i].lf), str(grafo.nodes_dict[i].holgura)))
         j += 1
-    
+
+    #Ubicando la tabla en la interfaz
     tabla.pack()
-    tabla.place(x="600", y="150") 
+    tabla.place(x="550", y="210") 
+
 
 # Main
 def ejecucionCPM():
 
+    #Variables
     global nodesId
     nodesId = []
     global activities
@@ -578,9 +578,11 @@ def ejecucionCPM():
 
     # Si es valido, ejecuta el programa
     if valid:
-
+        #Se crea el grafo
         graph = create()
+        #Se ejecuta la ruta crítica
         cpm(graph)
+        #Se crea la tabla
         create_table(graph)
 
     # Si no es valido, indica error
@@ -589,7 +591,8 @@ def ejecucionCPM():
         print('Txt malo')
 
 
-botonComenzar = Button(homeFrame, text="Calcular Ruta Critica", width=25,height=1, bg="#B6CBDE", font=("Roboto", 10, "bold"), command=ejecucionCPM).place(x="625", y="180", anchor="center")
+#BTN
+botonComenzar = Button(homeFrame, text="Calcular Ruta Crítica", width=25,height=1, bg="#B6CBDE", font=("Roboto", 10, "bold"), command=ejecucionCPM).place(x="625", y="180", anchor="center")
 
 
 home.mainloop()
