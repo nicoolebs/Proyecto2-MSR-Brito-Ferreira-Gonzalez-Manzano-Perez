@@ -31,11 +31,13 @@ homeFrame.config(bg="#f0ebe7")
 homeFrame.config(width="1300", height="700")
 
 # Etiquetas que se muestran en pantalla con mensajes de Bienvenida
-Label(homeFrame, text="Calculadora de Ruta Critica CPM/PERT", fg="#000000", font=("Poppins", 18, "bold"),
-      bg="#f0ebe7").place(x="600", y="50", anchor="center")
-Label(homeFrame, text="Una vez colocado su cronograma en el archivo de datos, oprima el siguiente botón para calcular su ruta crítica.", fg="#000000",
+Label(homeFrame, text="¡Bienvenido a la Calculadora de Ruta Critica CPM/PERT!", fg="#000000", font=("Poppins", 18, "bold"), bg="#f0ebe7").place(x="600", y="50", anchor="center")
+Label(homeFrame, text="Por favor, edite su Archivo TXT con sus actividades y datos respectivos.", fg="#000000",
       font=("Roboto", 12, "bold"), bg="#f0ebe7") \
     .place(x="600", y="115", anchor="center")
+Label(homeFrame, text="Una vez colocadas las mismas en el archivo de datos, oprima el siguiente botón para calcular a ruta crítica del Proyecto.", fg="#000000",
+      font=("Roboto", 12, "bold"), bg="#f0ebe7") \
+    .place(x="600", y="145", anchor="center")
 
 
 #EJECUCION DEL CPM
@@ -502,7 +504,7 @@ def ejecucionCPM():
 
         print('Txt malo')
 
-botonComenzar = Button(homeFrame, text="Calcular Ruta Critica", width=25,height=1, bg="#B6CBDE", font=("Roboto", 10, "bold"), command=ejecucionCPM).place(x="625", y="140", anchor="center")
+botonComenzar = Button(homeFrame, text="Calcular Ruta Critica", width=25,height=1, bg="#B6CBDE", font=("Roboto", 10, "bold"), command=ejecucionCPM).place(x="625", y="180", anchor="center")
 
 
 home.mainloop()
