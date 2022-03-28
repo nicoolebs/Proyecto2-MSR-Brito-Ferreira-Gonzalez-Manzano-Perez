@@ -444,7 +444,13 @@ def cpm(graphVal: Graph):
         for n in nodosHolguraId:
             print(f"Nodo: {n}, Holgura: {graph.nodes_dict[n].holgura}")
 
+
     # Dibujo del Método de la Ruta Crítica:
+
+    #Configuración de la figura a generar del grafo en la interfaz
+    figure= plt.figure(figsize=(4, 4), dpi=100)
+    plt.axis('off')
+    subplot= figure.add_subplot(111)
 
     global graphX1
     graphX1 = graphX
@@ -479,11 +485,15 @@ def cpm(graphVal: Graph):
         colorList.append('black')
 
     values = [('green' if node == 'inicio' or node == "final"  else ('blue')) for node in G.nodes()]
-    # nx.draw(G,  arrows=True, with_labels=True, node_size = 1000, node_color = values)
     nx.drawing.nx_pylab.draw_networkx (G,  arrows=True, with_labels=True, edgelist=edgesList, edge_color=colorList, node_size = 1000, node_color = values)
 
-    # nx.drawing.nx_pylab.draw_networkx (G,  arrows=True, with_labels=True, edgelist=black_edges,)
-    plt.show()
+    #Colocando el dibujo en la ventana de Tkinter
+    canvas = FigureCanvasTkAgg(figure,master=home)
+    canvas.draw()
+    canvas.get_tk_widget().pack()
+    toolbar = NavigationToolbar2Tk(canvas, home)
+    toolbar.update()
+    canvas.get_tk_widget().place(x="50", y="150")
 
 
 # Main
