@@ -425,32 +425,32 @@ def cpm(graphVal: Graph):
         else:
             pathStr += i
 
+    Texto_holg=''
+    Texto_holg_2=''
+    
     if num_holg == num_nodes:
         Texto_holg='En este proyecto todas las actividades son críticas.'
-        Label(homeFrame, text=Texto_holg, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="425")
         Texto_holg_2='Una posible ruta crítica puede ser la siguiente:'
-        Label(homeFrame, text=Texto_holg_2, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="448")
+    else:
+        Texto_holg=''
+        Texto_holg_2=''
+    
+    Label(homeFrame, text=Texto_holg, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="425")
+    Label(homeFrame, text=Texto_holg_2, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="448")
 
     #Mensaje Ruta Crítica
-    ruta_critica='Ruta Crítica del Proyecto: '+ str({pathStr})
+    ruta_critica='Ruta Crítica del Proyecto: '+ str(pathStr)
     Label(homeFrame, text=ruta_critica, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="475")
     #Mensaje Tiempo de duración
-    ruta_critica='Tiempo de Duración del Proyecto: '+ str({totalDuration})
+    ruta_critica='Tiempo de Duración del Proyecto: '+ str(totalDuration)
     Label(homeFrame, text=ruta_critica, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="500")
     #Mensaje de la Actividad Inicial
-    actividad_inicial='Actividad Inicial del Proyecto: '+ str({graphX.nodes_dict[start].description})
+    actividad_inicial='Actividad Inicial del Proyecto: '+ str(graphX.nodes_dict[start].description)
     Label(homeFrame, text=actividad_inicial, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="525")
     #Mensaje de la Actividad Final
-    actividad_inicial='Actividad Final del Proyecto: '+ str({graphX.nodes_dict[end].description})
+    actividad_inicial='Actividad Final del Proyecto: '+ str(graphX.nodes_dict[end].description)
     Label(homeFrame, text=actividad_inicial, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="555")
-    #Nodos con holgura
-    if num_holg != num_nodes:
-        Label(homeFrame, text='Nodos con Holgura: ', fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="575")
-        for n in nodosHolguraId:
-            nodos_hog='Nodo: '+{n}+' -> Holgura: '+{graph.nodes_dict[n].holgura}
-            Label(homeFrame, text=nodos_hog, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="595")
-    
-        
+
     # Dibujo del Método de la Ruta Crítica:
 
     #Configuración de la figura a generar del grafo en la interfaz
