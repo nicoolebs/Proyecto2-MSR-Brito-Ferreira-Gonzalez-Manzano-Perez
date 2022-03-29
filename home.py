@@ -427,29 +427,29 @@ def cpm(graphVal: Graph):
 
     Texto_holg=''
     Texto_holg_2=''
-    
+
     if num_holg == num_nodes:
         Texto_holg='En este proyecto todas las actividades son críticas.'
         Texto_holg_2='Una posible ruta crítica puede ser la siguiente:'
     else:
-        Texto_holg=''
-        Texto_holg_2=''
+        Texto_holg='                                                                                                                                            '
+        Texto_holg_2='                                                                                                                                                 '
     
-    Label(homeFrame, text=Texto_holg, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="425")
-    Label(homeFrame, text=Texto_holg_2, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="448")
+    Label(homeFrame, text=Texto_holg, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="435")
+    Label(homeFrame, text=Texto_holg_2, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="458")
 
     #Mensaje Ruta Crítica
     ruta_critica='Ruta Crítica del Proyecto: '+ str(pathStr)
-    Label(homeFrame, text=ruta_critica, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="475")
+    Label(homeFrame, text=ruta_critica, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="485")
     #Mensaje Tiempo de duración
     ruta_critica='Tiempo de Duración del Proyecto: '+ str(totalDuration)
-    Label(homeFrame, text=ruta_critica, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="500")
+    Label(homeFrame, text=ruta_critica, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="510")
     #Mensaje de la Actividad Inicial
     actividad_inicial='Actividad Inicial del Proyecto: '+ str(graphX.nodes_dict[start].description)
-    Label(homeFrame, text=actividad_inicial, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="525")
+    Label(homeFrame, text=actividad_inicial, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="535")
     #Mensaje de la Actividad Final
     actividad_inicial='Actividad Final del Proyecto: '+ str(graphX.nodes_dict[end].description)
-    Label(homeFrame, text=actividad_inicial, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="555")
+    Label(homeFrame, text=actividad_inicial, fg="#000000", font=("Roboto", 12, "bold"), bg="#f0ebe7").place(x="550", y="565")
 
     # Dibujo del Método de la Ruta Crítica:
 
